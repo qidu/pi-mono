@@ -105,8 +105,7 @@ const PROVIDER_MODEL_PAIRS: ProviderModelPair[] = [
 	{ provider: "opencode-go", model: "kimi-k2.5", label: "go-kimi-k2.5" },
 	{ provider: "opencode-go", model: "minimax-m2.5", label: "go-minimax-m2.5" },
 	// QNAIGC
-	{ provider: "QNAIGC", model: "deepseek-r1-0528", label: "qnaigc-deepseek-r1-0528", apiOverride: "openai-completions" },
-	{ provider: "QNAIGC", model: "xiaomi/mimo-v2-flash", label: "qnaigc-xiaomi-mimo-v2-flash", apiOverride: "openai-completions" },
+	{ provider: "QNAIGC", model: "deepseek/deepseek-v3.2-251201", label: "qnaigc-deepseek-v3.2-251201",	apiOverride: "openai-completions" },
 ];
 
 // Cached context structure

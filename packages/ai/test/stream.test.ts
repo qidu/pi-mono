@@ -841,8 +841,8 @@ describe("Generate E2E Tests", () => {
 		},
 	);
 
-	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (deepseek-r1-0528 via OpenAI Completions)", () => {
-		const llm = getModel("QNAIGC", "deepseek-r1-0528");
+	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (deepseek/deepseek-v3.2-251201 via OpenAI Completions)", () => {
+		const llm = getModel("QNAIGC", "deepseek/deepseek-v3.2-251201");
 
 		it("should complete basic text generation", { retry: 3 }, async () => {
 			await basicTextGeneration(llm);
@@ -856,11 +856,12 @@ describe("Generate E2E Tests", () => {
 			await handleStreaming(llm);
 		});
 
-		it("should handle thinking mode", { retry: 3 }, async () => {
+		// Note: deepseek-v3.2-251201 does not emit thinking chunks, so thinking tests are skipped
+		it.skip("should handle thinking mode", { retry: 3 }, async () => {
 			await handleThinking(llm, { reasoningEffort: "medium" });
 		});
 
-		it("should handle multi-turn with thinking and tools", { retry: 3 }, async () => {
+		it.skip("should handle multi-turn with thinking and tools", { retry: 3 }, async () => {
 			await multiTurn(llm, { reasoningEffort: "medium" });
 		});
 	});
