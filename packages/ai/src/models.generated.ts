@@ -7,10 +7,10 @@ export const MODELS = {
 	"QNAIGC": {
 		"claude-sonnet-4-20250514": {
 			id: "claude-sonnet-4-20250514",
-			name: "Claude Sonnet 4 (Local)",
-			api: "anthropic-messages",
+			name: "Claude Sonnet 4",
+			api: "openai-completions",
 			provider: "QNAIGC",
-			baseUrl: "http://localhost:8788",
+			baseUrl: "https://api.qnaigc.com/v1",
 			reasoning: true,
 			input: ["text", "image"],
 			cost: {
@@ -21,7 +21,7 @@ export const MODELS = {
 			},
 			contextWindow: 200000,
 			maxTokens: 8192,
-		} satisfies Model<"anthropic-messages">,
+		} satisfies Model<"openai-completions">,
 		"deepseek-r1-0528": {
 			id: "deepseek-r1-0528",
 			name: "DeepSeek R1 0528 (QNAIGC)",
@@ -72,23 +72,6 @@ export const MODELS = {
 			},
 			contextWindow: 128000,
 			maxTokens: 4096,
-		} satisfies Model<"openai-completions">,
-		"gpt-4o": {
-			id: "gpt-4o",
-			name: "GPT-4o (Local)",
-			api: "openai-completions",
-			provider: "QNAIGC",
-			baseUrl: "http://localhost:8788",
-			reasoning: false,
-			input: ["text", "image"],
-			cost: {
-				input: 0,
-				output: 0,
-				cacheRead: 0,
-				cacheWrite: 0,
-			},
-			contextWindow: 128000,
-			maxTokens: 16384,
 		} satisfies Model<"openai-completions">,
 		"meituan/longcat-flash-lite": {
 			id: "meituan/longcat-flash-lite",
