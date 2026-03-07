@@ -5,23 +5,6 @@ import type { Model } from "./types.js";
 
 export const MODELS = {
 	"QNAIGC": {
-		"claude-sonnet-4-20250514": {
-			id: "claude-sonnet-4-20250514",
-			name: "Claude Sonnet 4",
-			api: "openai-completions",
-			provider: "QNAIGC",
-			baseUrl: "https://api.qnaigc.com/v1",
-			reasoning: true,
-			input: ["text", "image"],
-			cost: {
-				input: 0,
-				output: 0,
-				cacheRead: 0,
-				cacheWrite: 0,
-			},
-			contextWindow: 200000,
-			maxTokens: 8192,
-		} satisfies Model<"openai-completions">,
 		"deepseek-r1-0528": {
 			id: "deepseek-r1-0528",
 			name: "DeepSeek R1 0528 (QNAIGC)",
@@ -73,6 +56,23 @@ export const MODELS = {
 			contextWindow: 128000,
 			maxTokens: 4096,
 		} satisfies Model<"openai-completions">,
+		"doubao-seed-2.0-mini": {
+			id: "doubao-seed-2.0-mini",
+			name: "Doubao Seed 2.0 Mini (QNAIGC)",
+			api: "openai-completions",
+			provider: "QNAIGC",
+			baseUrl: "https://api.qnaigc.com/v1",
+			reasoning: false,
+			input: ["text"],
+			cost: {
+				input: 0,
+				output: 0,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 128000,
+			maxTokens: 4096,
+		} satisfies Model<"openai-completions">,
 		"meituan/longcat-flash-lite": {
 			id: "meituan/longcat-flash-lite",
 			name: "Meituan LongCat Flash Lite (QNAIGC)",
@@ -107,6 +107,23 @@ export const MODELS = {
 			contextWindow: 128000,
 			maxTokens: 4096,
 		} satisfies Model<"openai-completions">,
+		"minimax/minimax-m2.5-highspeed": {
+			id: "minimax/minimax-m2.5-highspeed",
+			name: "MiniMax M2.5 HighSpeed (QNAIGC)",
+			api: "openai-completions",
+			provider: "QNAIGC",
+			baseUrl: "https://api.qnaigc.com/v1",
+			reasoning: false,
+			input: ["text"],
+			cost: {
+				input: 0,
+				output: 0,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 128000,
+			maxTokens: 4096,
+		} satisfies Model<"openai-completions">,
 		"moonshotai/kimi-k2.5": {
 			id: "moonshotai/kimi-k2.5",
 			name: "Moonshot AI Kimi K2.5 (QNAIGC)",
@@ -114,6 +131,23 @@ export const MODELS = {
 			provider: "QNAIGC",
 			baseUrl: "https://api.qnaigc.com/v1",
 			reasoning: true,
+			input: ["text"],
+			cost: {
+				input: 0,
+				output: 0,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 128000,
+			maxTokens: 4096,
+		} satisfies Model<"openai-completions">,
+		"stepfun/step-3.5-flash": {
+			id: "stepfun/step-3.5-flash",
+			name: "StepFun Step 3.5 Flash (QNAIGC)",
+			api: "openai-completions",
+			provider: "QNAIGC",
+			baseUrl: "https://api.qnaigc.com/v1",
+			reasoning: false,
 			input: ["text"],
 			cost: {
 				input: 0,
@@ -4709,7 +4743,7 @@ export const MODELS = {
 	"mistral": {
 		"codestral-latest": {
 			id: "codestral-latest",
-			name: "Codestral",
+			name: "Codestral (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4760,7 +4794,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"devstral-medium-latest": {
 			id: "devstral-medium-latest",
-			name: "Devstral 2",
+			name: "Devstral 2 (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4828,7 +4862,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"magistral-medium-latest": {
 			id: "magistral-medium-latest",
-			name: "Magistral Medium",
+			name: "Magistral Medium (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4862,7 +4896,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"ministral-3b-latest": {
 			id: "ministral-3b-latest",
-			name: "Ministral 3B",
+			name: "Ministral 3B (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4879,7 +4913,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"ministral-8b-latest": {
 			id: "ministral-8b-latest",
-			name: "Ministral 8B",
+			name: "Ministral 8B (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4930,7 +4964,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"mistral-large-latest": {
 			id: "mistral-large-latest",
-			name: "Mistral Large",
+			name: "Mistral Large (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -4981,7 +5015,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"mistral-medium-latest": {
 			id: "mistral-medium-latest",
-			name: "Mistral Medium",
+			name: "Mistral Medium (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -5032,7 +5066,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"mistral-small-latest": {
 			id: "mistral-small-latest",
-			name: "Mistral Small",
+			name: "Mistral Small (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -5117,7 +5151,7 @@ export const MODELS = {
 		} satisfies Model<"mistral-conversations">,
 		"pixtral-large-latest": {
 			id: "pixtral-large-latest",
-			name: "Pixtral Large",
+			name: "Pixtral Large (latest)",
 			api: "mistral-conversations",
 			provider: "mistral",
 			baseUrl: "https://api.mistral.ai",
@@ -7754,7 +7788,7 @@ export const MODELS = {
 			cost: {
 				input: 0.27,
 				output: 0.95,
-				cacheRead: 0.0299999997,
+				cacheRead: 0.0290000007,
 				cacheWrite: 0,
 			},
 			contextWindow: 196608,
@@ -9554,13 +9588,13 @@ export const MODELS = {
 			reasoning: true,
 			input: ["text"],
 			cost: {
-				input: 0,
-				output: 0,
-				cacheRead: 0,
+				input: 0.11,
+				output: 0.6,
+				cacheRead: 0.055,
 				cacheWrite: 0,
 			},
-			contextWindow: 131072,
-			maxTokens: 4096,
+			contextWindow: 262144,
+			maxTokens: 262144,
 		} satisfies Model<"openai-completions">,
 		"qwen/qwen3-30b-a3b": {
 			id: "qwen/qwen3-30b-a3b",
@@ -11604,6 +11638,23 @@ export const MODELS = {
 			contextWindow: 204800,
 			maxTokens: 131000,
 		} satisfies Model<"anthropic-messages">,
+		"minimax/minimax-m2.5-highspeed": {
+			id: "minimax/minimax-m2.5-highspeed",
+			name: "MiniMax M2.5 High Speed",
+			api: "anthropic-messages",
+			provider: "vercel-ai-gateway",
+			baseUrl: "https://ai-gateway.vercel.sh",
+			reasoning: true,
+			input: ["text"],
+			cost: {
+				input: 0.6,
+				output: 2.4,
+				cacheRead: 0.03,
+				cacheWrite: 0.375,
+			},
+			contextWindow: 4096,
+			maxTokens: 4096,
+		} satisfies Model<"anthropic-messages">,
 		"mistral/codestral": {
 			id: "mistral/codestral",
 			name: "Mistral Codestral",
@@ -12315,7 +12366,7 @@ export const MODELS = {
 				cacheRead: 0.25,
 				cacheWrite: 0,
 			},
-			contextWindow: 1050000,
+			contextWindow: 200000,
 			maxTokens: 128000,
 		} satisfies Model<"anthropic-messages">,
 		"openai/gpt-5.4-pro": {
