@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.57.1] - 2026-03-07
+
+### Fixed
+
+- Fixed context overflow detection to recognize z.ai `model_context_window_exceeded` errors surfaced through OpenAI-compatible stop reason handling ([#1937](https://github.com/badlogic/pi-mono/issues/1937))
+
+## [0.57.0] - 2026-03-07
+
+### Added
+
+- Added per-request payload inspection and replacement hook support via `beforeProviderRequest`, allowing callers to inspect or replace provider payloads before sending.
+
+## [0.56.3] - 2026-03-06
+
 ### Added
 
 - Added `claude-sonnet-4-6` model for the `google-antigravity` provider ([#1859](https://github.com/badlogic/pi-mono/issues/1859)).
@@ -10,6 +24,7 @@
 ### Fixed
 
 - Fixed Antigravity Claude thinking beta header detection to use provider and model capability instead of `-thinking` suffix, so models like `claude-sonnet-4-6` receive the header correctly ([#1859](https://github.com/badlogic/pi-mono/issues/1859)).
+- Fixed OpenAI Responses reasoning replay regression that dropped reasoning blocks on follow-up turns ([#1878](https://github.com/badlogic/pi-mono/issues/1878))
 
 ## [0.56.2] - 2026-03-05
 
