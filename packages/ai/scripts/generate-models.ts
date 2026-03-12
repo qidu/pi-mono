@@ -1433,15 +1433,15 @@ async function generateModels() {
 		}
 	}
 
-	// QNAIGC OpenAI-compatible models from https://api.qnaigc.com
-	const QNAIGC_OPENAI_BASE_URL = "https://api.qnaigc.com/v1";
-	const qnaigcOpenAIModels: Model<"openai-completions">[] = [
+	// QNAIGC Anthropic-compatible models from https://anthropic.qnaigc.com
+	const QNAIGC_ANTHROPIC_BASE_URL = "https://anthropic.qnaigc.com";
+	const qnaigcAgentModels: Model<"anthropic-messages">[] = [
 		{
 			id: "minimax/minimax-m2.5",
 			name: "MiniMax M2.5 (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1451,9 +1451,9 @@ async function generateModels() {
 		{
 			id: "deepseek-r1-0528",
 			name: "DeepSeek R1 0528 (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: true,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1463,9 +1463,9 @@ async function generateModels() {
 		{
 			id: "meituan/longcat-flash-lite",
 			name: "Meituan LongCat Flash Lite (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1475,9 +1475,9 @@ async function generateModels() {
 		{
 			id: "doubao-seed-1.6",
 			name: "Doubao Seed 1.6 (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1487,9 +1487,9 @@ async function generateModels() {
 		{
 			id: "moonshotai/kimi-k2.5",
 			name: "Moonshot AI Kimi K2.5 (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: true,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1499,9 +1499,9 @@ async function generateModels() {
 		{
 			id: "deepseek/deepseek-v3.2-251201",
 			name: "DeepSeek V3.2 251201 (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1511,9 +1511,9 @@ async function generateModels() {
 		{
 			id: "stepfun/step-3.5-flash",
 			name: "StepFun Step 3.5 Flash (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1523,9 +1523,9 @@ async function generateModels() {
 		{
 			id: "doubao-seed-2.0-mini",
 			name: "Doubao Seed 2.0 Mini (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1535,9 +1535,21 @@ async function generateModels() {
 		{
 			id: "minimax/minimax-m2.5-highspeed",
 			name: "MiniMax M2.5 HighSpeed (QNAIGC)",
-			api: "openai-completions",
+			api: "anthropic-messages",
 			provider: "QNAIGC",
-			baseUrl: QNAIGC_OPENAI_BASE_URL,
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
+			reasoning: false,
+			input: ["text"],
+			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+			contextWindow: 128000,
+			maxTokens: 4096,
+		},
+		{
+			id: "z-ai/glm-5",
+			name: "Z-AI GLM-5 (QNAIGC)",
+			api: "anthropic-messages",
+			provider: "QNAIGC",
+			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -1545,7 +1557,7 @@ async function generateModels() {
 			maxTokens: 4096,
 		},
 	];
-	for (const model of qnaigcOpenAIModels) {
+	for (const model of qnaigcAgentModels) {
 		if (!allModels.some(m => m.provider === "QNAIGC" && m.id === model.id)) {
 			allModels.push(model);
 		}
@@ -1554,7 +1566,7 @@ async function generateModels() {
 	// Fetch additional models from QNAIGC /v1/models endpoint
 	try {
 		console.log("Fetching models from QNAIGC API...");
-		const response = await fetch("https://api.qnaigc.com/v1/models");
+		const response = await fetch("https://anthropic.qnaigc.com/v1/models");
 		const data = await response.json();
 
 		if (data.data && Array.isArray(data.data)) {
@@ -1569,7 +1581,7 @@ async function generateModels() {
 						name: model.name || model.id,
 						api: "openai-completions",
 						provider: "QNAIGC",
-						baseUrl: QNAIGC_OPENAI_BASE_URL,
+						baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
 						reasoning: model.supported_parameters?.includes("reasoning") || false,
 						input: ["text"],
 						cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },

@@ -841,7 +841,7 @@ describe("Generate E2E Tests", () => {
 		},
 	);
 
-	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (deepseek/deepseek-v3.2-251201 via OpenAI Completions)", () => {
+	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (deepseek/deepseek-v3.2-251201 via Anthropic Messages)", () => {
 		const llm = getModel("QNAIGC", "deepseek/deepseek-v3.2-251201");
 
 		it("should complete basic text generation", { retry: 3 }, async () => {

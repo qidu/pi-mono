@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { getModel } from "../src/models.js";
-import type { Model } from "../src/types.js";
 
 describe("QNAIGC Provider", () => {
 	it("should have minimax/minimax-m2.5 model", () => {
@@ -8,8 +7,8 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("minimax/minimax-m2.5");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
-		expect(model.baseUrl).toBe("https://api.qnaigc.com/v1");
+		expect(model.api).toBe("anthropic-messages");
+		expect(model.baseUrl).toBe("https://anthropic.qnaigc.com");
 	});
 
 	it("should have correct configuration for minimax/minimax-m2.5 model", () => {
@@ -43,18 +42,21 @@ describe("QNAIGC Provider", () => {
 		expect(model.reasoning).toBeDefined();
 	});
 
-	it("should have openai-completions API type for minimax/minimax-m2.5 model", () => {
+	it("should have anthropic-messages API type for minimax/minimax-m2.5 model", () => {
 		const model = getModel("QNAIGC", "minimax/minimax-m2.5");
-		expect(model.api).toBe("openai-completions");
-		// Verify it's not using other API types
-		expect(model.api).not.toBe("anthropic-messages");
+		expect(model.api).toBe("anthropic-messages");
+		// Verify it uses the anthropic-messages API
+		expect(model.api).not.toBe("openai-completions");
 		expect(model.api).not.toBe("google-gemini");
 	});
 
 	it("should only be available in QNAIGC provider for minimax/minimax-m2.5 model", () => {
 		// Test that the model is not available from other providers
+		// @ts-expect-error - model not available in openai provider
 		expect(getModel("openai", "minimax/minimax-m2.5")).toBeUndefined();
+		// @ts-expect-error - model not available in anthropic provider
 		expect(getModel("anthropic", "minimax/minimax-m2.5")).toBeUndefined();
+		// @ts-expect-error - model not available in google provider
 		expect(getModel("google", "minimax/minimax-m2.5")).toBeUndefined();
 		// But should be available from QNAIGC
 		expect(getModel("QNAIGC", "minimax/minimax-m2.5")).toBeDefined();
@@ -65,7 +67,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("deepseek-r1-0528");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 		expect(model.reasoning).toBe(true);
 	});
 
@@ -74,7 +76,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("deepseek/deepseek-v3.2-251201");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 	});
 
 	it("should have doubao-seed-1.6 model", () => {
@@ -82,7 +84,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("doubao-seed-1.6");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 	});
 
 	it("should have meituan/longcat-flash-lite model", () => {
@@ -90,7 +92,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("meituan/longcat-flash-lite");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 	});
 
 	it("should have moonshotai/kimi-k2.5 model", () => {
@@ -98,7 +100,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("moonshotai/kimi-k2.5");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 		expect(model.reasoning).toBe(true);
 	});
 
@@ -107,7 +109,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("stepfun/step-3.5-flash");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 		expect(model.reasoning).toBe(false);
 	});
 
@@ -116,7 +118,7 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("doubao-seed-2.0-mini");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
 		expect(model.reasoning).toBe(false);
 	});
 
@@ -125,7 +127,16 @@ describe("QNAIGC Provider", () => {
 		expect(model).toBeDefined();
 		expect(model.id).toBe("minimax/minimax-m2.5-highspeed");
 		expect(model.provider).toBe("QNAIGC");
-		expect(model.api).toBe("openai-completions");
+		expect(model.api).toBe("anthropic-messages");
+		expect(model.reasoning).toBe(false);
+	});
+
+	it("should have z-ai/glm-5 model", () => {
+		const model = getModel("QNAIGC", "z-ai/glm-5");
+		expect(model).toBeDefined();
+		expect(model.id).toBe("z-ai/glm-5");
+		expect(model.provider).toBe("QNAIGC");
+		expect(model.api).toBe("anthropic-messages");
 		expect(model.reasoning).toBe(false);
 	});
 });
