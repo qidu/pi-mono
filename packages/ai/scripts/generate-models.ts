@@ -1435,7 +1435,9 @@ async function generateModels() {
 
 	// QNAIGC Anthropic-compatible models from https://anthropic.qnaigc.com
 	const QNAIGC_ANTHROPIC_BASE_URL = "https://anthropic.qnaigc.com";
-	const qnaigcAgentModels: Model<"anthropic-messages">[] = [
+
+	// Static QNAIGC models with correct configuration (must be added before API fetch)
+	const qnaigcStaticModels: Model<"anthropic-messages">[] = [
 		{
 			id: "minimax/minimax-m2.5",
 			name: "MiniMax M2.5 (QNAIGC)",
@@ -1490,7 +1492,7 @@ async function generateModels() {
 			api: "anthropic-messages",
 			provider: "QNAIGC",
 			baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
-			reasoning: true,
+			reasoning: true, // Explicitly marked as reasoning
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 			contextWindow: 128000,
@@ -1557,37 +1559,34 @@ async function generateModels() {
 			maxTokens: 4096,
 		},
 	];
-	for (const model of qnaigcAgentModels) {
+	for (const model of qnaigcStaticModels) {
 		if (!allModels.some(m => m.provider === "QNAIGC" && m.id === model.id)) {
 			allModels.push(model);
 		}
 	}
 
-	// Fetch additional models from QNAIGC /v1/models endpoint
+	// Fetch additional models from QNAIGC /v1/models endpoint (only new models)
 	try {
 		console.log("Fetching models from QNAIGC API...");
-		const response = await fetch("https://anthropic.qnaigc.com/v1/models");
+		const response = await fetch(QNAIGC_ANTHROPIC_BASE_URL + "/v1/models");
 		const data = await response.json();
 
 		if (data.data && Array.isArray(data.data)) {
 			for (const model of data.data) {
-				// Skip if model doesn't support tools
-				if (!model.supported_parameters?.includes("tools")) continue;
-
-				const existingModel = allModels.find(m => m.provider === "QNAIGC" && m.id === model.id);
-				if (!existingModel) {
+				// Only add if not already present from static list
+				if (!allModels.some(m => m.provider === "QNAIGC" && m.id === model.id)) {
 					allModels.push({
 						id: model.id,
-						name: model.name || model.id,
-						api: "openai-completions",
+						name: model.display_name || model.id,
+						api: "anthropic-messages" as const,
 						provider: "QNAIGC",
 						baseUrl: QNAIGC_ANTHROPIC_BASE_URL,
-						reasoning: model.supported_parameters?.includes("reasoning") || false,
-						input: ["text"],
+						reasoning: model.id.includes("thinking") || model.id.includes("-r1"),
+						input: ["text"] as ("text" | "image")[],
 						cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-						contextWindow: model.context_length || 128000,
-						maxTokens: model.top_provider?.max_completion_tokens || 4096,
-					});
+						contextWindow: 128000,
+						maxTokens: 4096,
+					} as const);
 				}
 			}
 		}
