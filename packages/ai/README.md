@@ -67,7 +67,7 @@ Unified LLM API with automatic model discovery, provider configuration, token an
 - **OpenCode Zen**
 - **OpenCode Go**
 - **Kimi For Coding** (Moonshot AI, uses Anthropic-compatible API)
-- **QNAIGV** (Anthropic-compatible and OpenAI-compatible server)
+- **QNAIGC** (uses Anthropic-compatible server)
 - **Any OpenAI-compatible API**: Ollama, vLLM, LM Studio, etc.
 
 ## Installation
