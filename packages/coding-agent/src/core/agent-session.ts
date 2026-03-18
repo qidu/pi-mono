@@ -67,7 +67,6 @@ import {
 	type TurnEndEvent,
 	type TurnStartEvent,
 	wrapRegisteredTools,
-	wrapToolsWithExtensions,
 } from "./extensions/index.js";
 import type { BashExecutionMessage, CustomMessage } from "./messages.js";
 import type { ModelRegistry } from "./model-registry.js";
@@ -291,6 +290,7 @@ export class AgentSession {
 		// Always subscribe to agent events for internal handling
 		// (session persistence, extensions, auto-compaction, retry logic)
 		this._unsubscribeAgent = this.agent.subscribe(this._handleAgentEvent);
+		this._installAgentToolHooks();
 
 		this._buildRuntime({
 			activeToolNames: this._initialActiveToolNames,
@@ -301,6 +301,65 @@ export class AgentSession {
 	/** Model registry for API key resolution and model discovery */
 	get modelRegistry(): ModelRegistry {
 		return this._modelRegistry;
+	}
+
+	/**
+	 * Install tool hooks once on the Agent instance.
+	 *
+	 * The callbacks read `this._extensionRunner` at execution time, so extension reload swaps in the
+	 * new runner without reinstalling hooks. Extension-specific tool wrappers are still used to adapt
+	 * registered tool execution to the extension context. Tool call and tool result interception now
+	 * happens here instead of in wrappers.
+	 */
+	private _installAgentToolHooks(): void {
+		this.agent.setBeforeToolCall(async ({ toolCall, args }) => {
+			const runner = this._extensionRunner;
+			if (!runner?.hasHandlers("tool_call")) {
+				return undefined;
+			}
+
+			await this._agentEventQueue;
+
+			try {
+				return await runner.emitToolCall({
+					type: "tool_call",
+					toolName: toolCall.name,
+					toolCallId: toolCall.id,
+					input: args as Record<string, unknown>,
+				});
+			} catch (err) {
+				if (err instanceof Error) {
+					throw err;
+				}
+				throw new Error(`Extension failed, blocking execution: ${String(err)}`);
+			}
+		});
+
+		this.agent.setAfterToolCall(async ({ toolCall, args, result, isError }) => {
+			const runner = this._extensionRunner;
+			if (!runner?.hasHandlers("tool_result")) {
+				return undefined;
+			}
+
+			const hookResult = await runner.emitToolResult({
+				type: "tool_result",
+				toolName: toolCall.name,
+				toolCallId: toolCall.id,
+				input: args as Record<string, unknown>,
+				content: result.content,
+				details: isError ? undefined : result.details,
+				isError,
+			});
+
+			if (!hookResult || isError) {
+				return undefined;
+			}
+
+			return {
+				content: hookResult.content,
+				details: hookResult.details,
+			};
+		});
 	}
 
 	// =========================================================================
@@ -1007,8 +1066,9 @@ export class AgentSession {
 	}
 
 	/**
-	 * Queue a steering message to interrupt the agent mid-run.
-	 * Delivered after current tool execution, skips remaining tools.
+	 * Queue a steering message while the agent is running.
+	 * Delivered after the current assistant turn finishes executing its tool calls,
+	 * before the next LLM call.
 	 * Expands skill commands and prompt templates. Errors on extension commands.
 	 * @param images Optional image attachments to include with the message
 	 * @throws Error if text is an extension command
@@ -1998,6 +2058,20 @@ export class AgentSession {
 			: undefined;
 	}
 
+	private _refreshCurrentModelFromRegistry(): void {
+		const currentModel = this.model;
+		if (!currentModel) {
+			return;
+		}
+
+		const refreshedModel = this._modelRegistry.find(currentModel.provider, currentModel.id);
+		if (!refreshedModel || refreshedModel === currentModel) {
+			return;
+		}
+
+		this.agent.setModel(refreshedModel);
+	}
+
 	private _bindExtensionCore(runner: ExtensionRunner): void {
 		const normalizeLocation = (source: string): SlashCommandLocation | undefined => {
 			if (source === "user" || source === "project" || source === "path") {
@@ -2106,6 +2180,16 @@ export class AgentSession {
 				},
 				getSystemPrompt: () => this.systemPrompt,
 			},
+			{
+				registerProvider: (name, config) => {
+					this._modelRegistry.registerProvider(name, config);
+					this._refreshCurrentModelFromRegistry();
+				},
+				unregisterProvider: (name) => {
+					this._modelRegistry.unregisterProvider(name);
+					this._refreshCurrentModelFromRegistry();
+				},
+			},
 		);
 	}
 
@@ -2121,9 +2205,7 @@ export class AgentSession {
 		this._toolPromptSnippets = new Map(
 			allCustomTools
 				.map((registeredTool) => {
-					const snippet = this._normalizePromptSnippet(
-						registeredTool.definition.promptSnippet ?? registeredTool.definition.description,
-					);
+					const snippet = this._normalizePromptSnippet(registeredTool.definition.promptSnippet);
 					return snippet ? ([registeredTool.definition.name, snippet] as const) : undefined;
 				})
 				.filter((entry): entry is readonly [string, string] => entry !== undefined),
@@ -2144,13 +2226,7 @@ export class AgentSession {
 		for (const tool of wrappedExtensionTools as AgentTool[]) {
 			toolRegistry.set(tool.name, tool);
 		}
-
-		if (this._extensionRunner) {
-			const wrappedAllTools = wrapToolsWithExtensions(Array.from(toolRegistry.values()), this._extensionRunner);
-			this._toolRegistry = new Map(wrappedAllTools.map((tool) => [tool.name, tool]));
-		} else {
-			this._toolRegistry = toolRegistry;
-		}
+		this._toolRegistry = toolRegistry;
 
 		const nextActiveToolNames = options?.activeToolNames
 			? [...options.activeToolNames]
@@ -2263,8 +2339,8 @@ export class AgentSession {
 		if (isContextOverflow(message, contextWindow)) return false;
 
 		const err = message.errorMessage;
-		// Match: overloaded_error, rate limit, 429, 500, 502, 503, 504, service unavailable, connection errors, fetch failed, terminated, retry delay exceeded
-		return /overloaded|rate.?limit|too many requests|429|500|502|503|504|service.?unavailable|server error|internal error|connection.?error|connection.?refused|other side closed|fetch failed|upstream.?connect|reset before headers|terminated|retry delay/i.test(
+		// Match: overloaded_error, provider returned error, rate limit, 429, 500, 502, 503, 504, service unavailable, network/connection errors, fetch failed, terminated, retry delay exceeded
+		return /overloaded|provider.?returned.?error|rate.?limit|too many requests|429|500|502|503|504|service.?unavailable|server.?error|internal.?error|network.?error|connection.?error|connection.?refused|other side closed|fetch failed|upstream.?connect|reset before headers|socket hang up|timed? out|timeout|terminated|retry delay/i.test(
 			err,
 		);
 	}

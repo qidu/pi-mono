@@ -247,11 +247,11 @@ user sends prompt ────────────────────�
   │   ├─► before_provider_request (can inspect or replace payload)
   │   │                                            │       │
   │   │   LLM responds, may call tools:            │       │
-  │   │     ├─► tool_call (can block)              │       │
   │   │     ├─► tool_execution_start               │       │
+  │   │     ├─► tool_call (can block)              │       │
   │   │     ├─► tool_execution_update              │       │
-  │   │     ├─► tool_execution_end                 │       │
-  │   │     └─► tool_result (can modify)           │       │
+  │   │     ├─► tool_result (can modify)           │       │
+  │   │     └─► tool_execution_end                 │       │
   │   │                                            │       │
   │   └─► turn_end                                 │       │
   │                                                        │
@@ -485,6 +485,11 @@ pi.on("message_end", async (event, ctx) => {
 
 Fired for tool execution lifecycle updates.
 
+In parallel tool mode:
+- `tool_execution_start` is emitted in assistant source order during the preflight phase
+- `tool_execution_update` events may interleave across tools
+- `tool_execution_end` is emitted in assistant source order, matching final tool result message order
+
 ```typescript
 pi.on("tool_execution_start", async (event, ctx) => {
   // event.toolCallId, event.toolName, event.args
@@ -553,7 +558,11 @@ Use this to update UI elements (status bars, footers) or perform model-specific 
 
 #### tool_call
 
-Fired before tool executes. **Can block.** Use `isToolCallEventType` to narrow and get typed inputs.
+Fired after `tool_execution_start`, before the tool executes. **Can block.** Use `isToolCallEventType` to narrow and get typed inputs.
+
+Before `tool_call` runs, pi waits for previously emitted Agent events to finish draining through `AgentSession`. This means `ctx.sessionManager` is up to date through the current assistant tool-calling message.
+
+In the default parallel tool execution mode, sibling tool calls from the same assistant message are preflighted sequentially, then executed concurrently. `tool_call` is not guaranteed to see sibling tool results from that same assistant message in `ctx.sessionManager`.
 
 ```typescript
 import { isToolCallEventType } from "@mariozechner/pi-coding-agent";
@@ -602,7 +611,7 @@ pi.on("tool_call", (event) => {
 
 #### tool_result
 
-Fired after tool executes. **Can modify result.**
+Fired after tool execution finishes and before `tool_execution_end` plus the final tool result message events are emitted. **Can modify result.**
 
 `tool_result` handlers chain like middleware:
 - Handlers run in extension load order
@@ -632,6 +641,8 @@ pi.on("tool_result", async (event, ctx) => {
 Fired when user executes `!` or `!!` commands. **Can intercept.**
 
 ```typescript
+import { createLocalBashOperations } from "@mariozechner/pi-coding-agent";
+
 pi.on("user_bash", (event, ctx) => {
   // event.command - the bash command
   // event.excludeFromContext - true if !! prefix
@@ -640,7 +651,17 @@ pi.on("user_bash", (event, ctx) => {
   // Option 1: Provide custom operations (e.g., SSH)
   return { operations: remoteBashOps };
 
-  // Option 2: Full replacement - return result directly
+  // Option 2: Wrap pi's built-in local bash backend
+  const local = createLocalBashOperations();
+  return {
+    operations: {
+      exec(command, cwd, options) {
+        return local.exec(`source ~/.profile\n${command}`, cwd, options);
+      }
+    }
+  };
+
+  // Option 3: Full replacement - return result directly
   return { result: { output: "...", exitCode: 0, cancelled: false, truncated: false } };
 });
 ```
@@ -714,6 +735,8 @@ Current working directory.
 ### ctx.sessionManager
 
 Read-only access to session state. See [session.md](session.md) for the full SessionManager API and entry types.
+
+For `tool_call`, this state is synchronized through the current assistant message before handlers run. In parallel tool execution mode it is still not guaranteed to include sibling tool results from the same assistant message.
 
 ```typescript
 ctx.sessionManager.getEntries()       // All entries
@@ -923,7 +946,7 @@ Register a custom tool callable by the LLM. See [Custom Tools](#custom-tools) fo
 
 Use `pi.setActiveTools()` to enable or disable tools (including dynamically added tools) at runtime.
 
-Use `promptSnippet` to customize that tool's one-line entry in `Available tools`, and `promptGuidelines` to append tool-specific bullets to the default `Guidelines` section when the tool is active.
+Use `promptSnippet` to opt a custom tool into a one-line entry in `Available tools`, and `promptGuidelines` to append tool-specific bullets to the default `Guidelines` section when the tool is active.
 
 See [dynamic-tools.ts](../examples/extensions/dynamic-tools.ts) for a full example.
 
@@ -976,7 +999,7 @@ pi.sendMessage({
 
 **Options:**
 - `deliverAs` - Delivery mode:
-  - `"steer"` (default) - Interrupts streaming. Delivered after current tool finishes, remaining tools skipped.
+  - `"steer"` (default) - Queues the message while streaming. Delivered after the current assistant turn finishes executing its tool calls, before the next LLM call.
   - `"followUp"` - Waits for agent to finish. Delivered only when agent has no more tool calls.
   - `"nextTurn"` - Queued for next user prompt. Does not interrupt or trigger anything.
 - `triggerTurn: true` - If agent is idle, trigger an LLM response immediately. Only applies to `"steer"` and `"followUp"` modes (ignored for `"nextTurn"`).
@@ -1002,7 +1025,7 @@ pi.sendUserMessage("And then summarize", { deliverAs: "followUp" });
 
 **Options:**
 - `deliverAs` - Required when agent is streaming:
-  - `"steer"` - Interrupts after current tool, remaining tools skipped
+  - `"steer"` - Queues the message for delivery after the current assistant turn finishes executing its tool calls
   - `"followUp"` - Waits for agent to finish all tools
 
 When not streaming, the message is sent immediately and triggers a new turn. When streaming without `deliverAs`, throws an error.
@@ -1325,7 +1348,7 @@ export default function (pi: ExtensionAPI) {
 
 Register tools the LLM can call via `pi.registerTool()`. Tools appear in the system prompt and can have custom rendering.
 
-Use `promptSnippet` for a short one-line entry in the `Available tools` section in the default system prompt. If omitted, pi falls back to `description`.
+Use `promptSnippet` for a short one-line entry in the `Available tools` section in the default system prompt. If omitted, custom tools are left out of that section.
 
 Use `promptGuidelines` to add tool-specific bullets to the default system prompt `Guidelines` section. These bullets are included only while the tool is active (for example, after `pi.setActiveTools([...])`).
 
@@ -1453,6 +1476,8 @@ pi.registerTool({
 ```
 
 **Operations interfaces:** `ReadOperations`, `WriteOperations`, `EditOperations`, `BashOperations`, `LsOperations`, `GrepOperations`, `FindOperations`
+
+For `user_bash`, extensions can reuse pi's local shell backend via `createLocalBashOperations()` instead of reimplementing local process spawning, shell resolution, and process-tree termination.
 
 The bash tool also supports a spawn hook to adjust the command, cwd, or env before execution:
 
