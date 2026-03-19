@@ -871,6 +871,79 @@ describe("Generate E2E Tests", () => {
 		});
 	});
 
+	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (minimax/minimax-m2.5 via Anthropic Messages)", () => {
+		const llm = getModel("QNAIGC", "minimax/minimax-m2.5");
+
+		it("should complete basic text generation", { retry: 3 }, async () => {
+			await basicTextGeneration(llm);
+		});
+
+		it("should handle tool calling", { retry: 3 }, async () => {
+			await handleToolCall(llm);
+		});
+
+		it("should handle streaming", { retry: 3 }, async () => {
+			await handleStreaming(llm);
+		});
+
+		it.skip("should handle thinking mode", { retry: 3 }, async () => {
+			await handleThinking(llm, { reasoningEffort: "medium" });
+		});
+
+		it.skip("should handle multi-turn with thinking and tools", { retry: 3 }, async () => {
+			await multiTurn(llm, { reasoningEffort: "medium" });
+		});
+	});
+
+	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (z-ai/glm-5 via Anthropic Messages)", () => {
+		const llm = getModel("QNAIGC", "z-ai/glm-5");
+
+		it("should complete basic text generation", { retry: 3 }, async () => {
+			await basicTextGeneration(llm);
+		});
+
+		it("should handle tool calling", { retry: 3 }, async () => {
+			await handleToolCall(llm);
+		});
+
+		it("should handle streaming", { retry: 3 }, async () => {
+			await handleStreaming(llm);
+		});
+
+		it.skip("should handle thinking mode", { retry: 3 }, async () => {
+			await handleThinking(llm, { reasoningEffort: "medium" });
+		});
+
+		it.skip("should handle multi-turn with thinking and tools", { retry: 3 }, async () => {
+			await multiTurn(llm, { reasoningEffort: "medium" });
+		});
+	});
+
+	describe.skipIf(!process.env.QNAIGC_API_KEY)("QNAIGC Provider (moonshotai/kimi-k2.5 via Anthropic Messages)", () => {
+		const llm = getModel("QNAIGC", "moonshotai/kimi-k2.5");
+
+		it("should complete basic text generation", { retry: 3 }, async () => {
+			await basicTextGeneration(llm);
+		});
+
+		it("should handle tool calling", { retry: 3 }, async () => {
+			await handleToolCall(llm);
+		});
+
+		it("should handle streaming", { retry: 3 }, async () => {
+			await handleStreaming(llm);
+		});
+
+		// Note: kimi-k2.5 might support thinking, but we skip for now
+		it.skip("should handle thinking mode", { retry: 3 }, async () => {
+			await handleThinking(llm, { reasoningEffort: "medium" });
+		});
+
+		it.skip("should handle multi-turn with thinking and tools", { retry: 3 }, async () => {
+			await multiTurn(llm, { reasoningEffort: "medium" });
+		});
+	});
+
 	// =========================================================================
 	// OAuth-based providers (credentials from ~/.pi/agent/oauth.json)
 	// Tokens are resolved at module level (see oauthTokens above)
