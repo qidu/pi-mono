@@ -16,8 +16,8 @@ describe("QNAIGC Provider", () => {
 		expect(model.name).toBe("MiniMax M2.5 (QNAIGC)");
 		expect(model.reasoning).toBe(false);
 		expect(model.input).toEqual(["text"]);
-		expect(model.contextWindow).toBe(128000);
-		expect(model.maxTokens).toBe(4096);
+		expect(model.contextWindow).toBe(204800);
+		expect(model.maxTokens).toBe(128000);
 		expect(model.cost).toEqual({
 			input: 0,
 			output: 0,
