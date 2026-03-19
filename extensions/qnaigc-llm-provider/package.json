@@ -1,6 +1,6 @@
 {
-  "name": "@qidu/qnaigc-llm-provider",
-  "version": "0.1.0",
+  "name": "qnaigc-llm-provider",
+  "version": "0.2.0",
   "description": "QNAIGC provider extension for pi-mono - Anthropic-compatible API for Chinese LLMs",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -47,9 +47,9 @@
     ]
   },
   "publishConfig": {
-  "access": "public"
-},
-"peerDependencies": {
+    "access": "public"
+  },
+  "peerDependencies": {
     "@mariozechner/pi-ai": "^0.60.0"
   },
   "devDependencies": {
