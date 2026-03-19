@@ -1471,8 +1471,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 204800,
+			maxTokens: 128000,
 		},
 		{
 			id: "deepseek-r1-0528",
@@ -1484,7 +1484,7 @@ async function generateModels() {
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 			contextWindow: 128000,
-			maxTokens: 4096,
+			maxTokens: 32000,
 		},
 		{
 			id: "meituan/longcat-flash-lite",
@@ -1495,8 +1495,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 256000,
+			maxTokens: 320000,
 		},
 		{
 			id: "doubao-seed-1.6",
@@ -1507,8 +1507,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 256000,
+			maxTokens: 32000,
 		},
 		{
 			id: "moonshotai/kimi-k2.5",
@@ -1519,8 +1519,8 @@ async function generateModels() {
 			reasoning: true, // Explicitly marked as reasoning
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 256000,
+			maxTokens: 256000,
 		},
 		{
 			id: "deepseek/deepseek-v3.2-251201",
@@ -1532,7 +1532,7 @@ async function generateModels() {
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 			contextWindow: 128000,
-			maxTokens: 4096,
+			maxTokens: 64000,
 		},
 		{
 			id: "stepfun/step-3.5-flash",
@@ -1543,8 +1543,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 256000,
+			maxTokens: 256000,
 		},
 		{
 			id: "doubao-seed-2.0-mini",
@@ -1555,8 +1555,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 256000,
+			maxTokens: 32000,
 		},
 		{
 			id: "minimax/minimax-m2.5-highspeed",
@@ -1567,8 +1567,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 204800,
+			maxTokens: 128000,
 		},
 		{
 			id: "z-ai/glm-5",
@@ -1579,8 +1579,8 @@ async function generateModels() {
 			reasoning: false,
 			input: ["text"],
 			cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-			contextWindow: 128000,
-			maxTokens: 4096,
+			contextWindow: 200000,
+			maxTokens: 128000,
 		},
 	];
 	for (const model of qnaigcStaticModels) {
@@ -1609,7 +1609,7 @@ async function generateModels() {
 						input: ["text"] as ("text" | "image")[],
 						cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 						contextWindow: 128000,
-						maxTokens: 4096,
+						maxTokens: 32000,
 					} as const);
 				}
 			}
