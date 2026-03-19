@@ -1,0 +1,20 @@
+{
+  "name": "@qidu/qnaigc-provider",
+  "version": "0.1.0",
+  "description": "QNAIGC provider extension for pi-mono",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["ai", "llm", "qnaigc", "provider", "pi-mono"],
+  "author": "qidu",
+  "license": "MIT",
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "^0.60.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
