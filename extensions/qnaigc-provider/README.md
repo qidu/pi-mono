@@ -4,9 +4,21 @@ This package provides QNAIGC models for use with the [pi-mono](https://github.co
 
 ## Installation
 
+### As npm package
 ```bash
 npm install @qidu/qnaigc-provider
 ```
+
+### As pi extension
+```bash
+pi install npm:@qidu/qnaigc-provider
+```
+
+## Extension Commands
+
+When installed as a pi extension, these commands are available:
+- `/qnaigc:list-models` - List all available QNAIGC models
+- `/qnaigc:info` - Show QNAIGC provider information
 
 ## Usage
 
