@@ -4,7 +4,6 @@
 
 ### Added
 
-- Added QNAIGC provider with Anthropic-compatible API support and 55+ models ([#PR_NUMBER](https://github.com/badlogic/pi-mono/pull/PR_NUMBER) by [@qidu](https://github.com/qidu))
 - Added `gpt-5.4-mini` model support for the `openai-codex` provider with Codex pricing metadata and unit coverage.
 
 ### Fixed
