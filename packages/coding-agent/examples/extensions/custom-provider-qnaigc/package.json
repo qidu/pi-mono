@@ -1,0 +1,67 @@
+{
+  "name": "qnaigc-llm-provider",
+  "version": "0.2.0",
+  "description": "QNAIGC provider extension for pi-mono - Anthropic-compatible API for Chinese LLMs",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\"",
+    "lint": "echo \"No linter configured\""
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "qnaigc",
+    "provider",
+    "pi-mono",
+    "anthropic",
+    "deepseek",
+    "minimax",
+    "chinese-llm",
+    "pi-package",
+    "pi-extension"
+  ],
+  "author": "qidu <teric@outlook.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qidu/pi-mono.git",
+    "directory": "extensions/qnaigc-provider"
+  },
+  "bugs": {
+    "url": "https://github.com/qidu/pi-mono/issues"
+  },
+  "homepage": "https://github.com/qidu/pi-mono/tree/main/extensions/qnaigc-provider#readme",
+  "pi": {
+    "extensions": [
+      "./dist/extensions/qnaigc-extension.js"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "^0.60.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
